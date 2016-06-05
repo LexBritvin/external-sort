@@ -78,7 +78,8 @@ class FileSplitter(object):
 
     def write_block(self, data, block_number):
         filename = self.BLOCK_FILENAME_FORMAT.format(block_number)
-        file = self.get_file_obj(filename, 'w')
+        # file = self.get_file_obj(filename, 'w')
+        file = open(filename, 'w')
         file.write(data)
         file.close()
         self.block_filenames.append(filename)
@@ -112,7 +113,7 @@ class FileSplitter(object):
 
 
 class BZ2FileSplitter(FileSplitter):
-    BLOCK_FILENAME_FORMAT = 'block_{0}.bz2'
+    # BLOCK_FILENAME_FORMAT = 'block_{0}.bz2'
 
     def get_file_obj(self, filename, mode):
         return bz2.BZ2File(filename, mode)
@@ -137,7 +138,7 @@ class FileMerger(object):
         files = {}
 
         for i in range(len(filenames)):
-            files[i] = self.get_file_obj(filenames[i], 'r', buffer_size)
+            files[i] = open(filenames[i], 'r', buffer_size)
 
         return files
 
