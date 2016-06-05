@@ -7,6 +7,8 @@ import bz2
 import os
 import argparse
 
+import time
+
 
 def main():
     """
@@ -53,13 +55,15 @@ class ExternalSort(object):
     def sort(self, filename, sort_key=None):
         # Get number of block files.
         num_blocks = self.get_number_blocks(filename, self.block_size)
+        start_time = time.time()
         splitter = BZ2FileSplitter(filename)
         splitter.split(self.block_size, sort_key)
 
         merger = BZ2FileMerger(NWayMerge())
         buffer_size = self.block_size / (num_blocks + 1)
         merger.merge(splitter.get_block_filenames(), 'out_' + filename, buffer_size)
-
+        elapsed_time = time.time() - start_time
+        print "Elapsed time:", elapsed_time, "s"
         splitter.cleanup()
 
     def get_number_blocks(self, filename, block_size):
